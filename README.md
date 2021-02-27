@@ -2,7 +2,7 @@
 
 [![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/github.com/fonini/go-pix/pix)
 [![Test Status](https://github.com/fonini/go-pix/workflows/tests/badge.svg)](https://github.com/fonini/go-pix/actions?query=workflow%3Atests)
-[![codecov](https://codecov.io/gh/fonini/go-pix/branch/master/graph/badge.svg?token=FB25JPH4ED)](https://codecov.io/gh/fonini/go-pix)
+[![codecov](https://codecov.io/gh/fonini/go-pix/branch/master/graph/badge.svg?token=9RNR32U66L)](https://codecov.io/gh/fonini/go-pix)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-pix)](https://goreportcard.com/report/github.com/fonini/go-pix)
 
 go-pix is a Go library for generating [Pix](https://www.bcb.gov.br/estabilidadefinanceira/pix) transactions using Copy and Paste or QR codes.
