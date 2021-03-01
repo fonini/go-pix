@@ -23,17 +23,18 @@ package pix
 import (
 	"errors"
 	"fmt"
-	"github.com/r10r/crc16"
-	"github.com/skip2/go-qrcode"
 	"reflect"
 	"sort"
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/r10r/crc16"
+	"github.com/skip2/go-qrcode"
 )
 
-// PixOptions is a configuration struct.
-type PixOptions struct {
+// Options is a configuration struct.
+type Options struct {
 	// Pix Key (CPF/CNPJ, Email, Cellphone or Random Key)
 	Key string
 	// Receiver name
@@ -44,6 +45,8 @@ type PixOptions struct {
 	Amount float64
 	// Transaction description
 	Description string
+	// Transaction ID
+	TransactionID string
 }
 
 // QRCodeOptions is a configuration struct.
@@ -57,7 +60,7 @@ type QRCodeOptions struct {
 type intMap map[int]interface{}
 
 // Pix generates a Copy and Paste Pix code
-func Pix(options PixOptions) (string, error) {
+func Pix(options Options) (string, error) {
 	if err := validateData(options); err != nil {
 		return "", err
 	}
@@ -91,7 +94,7 @@ func QRCode(options QRCodeOptions) ([]byte, error) {
 	return bytes, err
 }
 
-func validateData(options PixOptions) error {
+func validateData(options Options) error {
 	if options.Key == "" {
 		return errors.New("key must not be empty")
 	}
@@ -107,7 +110,7 @@ func validateData(options PixOptions) error {
 	return nil
 }
 
-func buildDataMap(options PixOptions) intMap {
+func buildDataMap(options Options) intMap {
 	data := make(intMap)
 
 	// Payload Format Indicator

@@ -3,12 +3,13 @@ package pix
 import (
 	"errors"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 // test that input matches the value we want. If not, report an error on t.
-func testValue(t *testing.T, input PixOptions, want string) {
+func testValue(t *testing.T, input Options, want string) {
 	v, err := Pix(input)
 
 	if err != nil {
@@ -21,7 +22,7 @@ func testValue(t *testing.T, input PixOptions, want string) {
 	}
 }
 
-func testError(t *testing.T, input PixOptions, want error) {
+func testError(t *testing.T, input Options, want error) {
 	v, err := Pix(input)
 
 	if err == nil {
@@ -35,17 +36,17 @@ func testError(t *testing.T, input PixOptions, want error) {
 
 func TestValues_FullOptions(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Name:        "Jonnas Fonini",
 			Key:         "jonnasfonini@gmail.com",
 			City:        "Marau",
 			Amount:      20.67,
 			Description: "Invoice #4",
 		}, "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"},
-		{PixOptions{
+		{Options{
 			Name:        "Jonnas Fonini",
 			Key:         "+5554000000000",
 			City:        "Porto Alegre",
@@ -61,10 +62,10 @@ func TestValues_FullOptions(t *testing.T) {
 
 func TestValues_WithoutName(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Key:    "jonnasfonini@gmail.com",
 			City:   "Marau",
 			Amount: 20.67,
@@ -78,10 +79,10 @@ func TestValues_WithoutName(t *testing.T) {
 
 func TestValues_WithoutCity(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Name:   "Jonnas Fonini",
 			Key:    "jonnasfonini@gmail.com",
 			Amount: 20.67,
@@ -95,10 +96,10 @@ func TestValues_WithoutCity(t *testing.T) {
 
 func TestValues_WithoutAmount(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Name: "Jonnas Fonini",
 			Key:  "jonnasfonini@gmail.com",
 			City: "Marau",
@@ -112,10 +113,10 @@ func TestValues_WithoutAmount(t *testing.T) {
 
 func TestValues_OnlyAmountAndAccount(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Key:    "jonnasfonini@gmail.com",
 			Amount: 5.50,
 		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com020052040000530398654045.505802BR62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304E0EE"},
@@ -128,10 +129,10 @@ func TestValues_OnlyAmountAndAccount(t *testing.T) {
 
 func TestValues_OnlyAccount(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  string
 	}{
-		{PixOptions{
+		{Options{
 			Key: "jonnasfonini@gmail.com",
 		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com020052040000530398654040.005802BR62410503***50300017BR.GOV.BCB.BRCODE01051.0.0630430B9"},
 	}
@@ -143,15 +144,15 @@ func TestValues_OnlyAccount(t *testing.T) {
 
 func TestValues_Errors(t *testing.T) {
 	tests := []struct {
-		input PixOptions
+		input Options
 		want  error
 	}{
-		{PixOptions{}, errors.New("key must not be empty")},
-		{PixOptions{
+		{Options{}, errors.New("key must not be empty")},
+		{Options{
 			Key:  "jonnasfonini@gmail.com",
 			Name: "Receiver long name to cause error",
 		}, errors.New("name must be at least 25 characters long")},
-		{PixOptions{
+		{Options{
 			Key:  "jonnasfonini@gmail.com",
 			City: "Receiver city long name",
 		}, errors.New("city must be at least 15 characters long")},
