@@ -37,6 +37,7 @@ options := pix.Options{
     City: "Marau",
     Amount: 20.67,
     Description: "Invoice #4",
+    TransactionID: "***", // optional
 }
 
 copyPaste, err := pix.Pix(options)

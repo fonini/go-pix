@@ -2,7 +2,6 @@ package pix
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -17,7 +16,6 @@ func testValue(t *testing.T, input Options, want string) {
 	}
 
 	if diff := cmp.Diff(want, v); diff != "" {
-		fmt.Println(input, v)
 		t.Errorf("Pix(%v) mismatch:\n%s", input, diff)
 	}
 }
@@ -53,6 +51,26 @@ func TestValues_FullOptions(t *testing.T) {
 			Amount:      5.50,
 			Description: "Lunch money",
 		}, "00020126510014BR.GOV.BCB.PIX0114+55540000000000211Lunch money52040000530398654045.505802BR5913Jonnas Fonini6012Porto Alegre62410503***50300017BR.GOV.BCB.BRCODE01051.0.063044766"},
+	}
+
+	for _, tt := range tests {
+		testValue(t, tt.input, tt.want)
+	}
+}
+
+func TestValues_TransactionID(t *testing.T) {
+	tests := []struct {
+		input Options
+		want  string
+	}{
+		{Options{
+			Name:          "Jonnas Fonini",
+			Key:           "jonnasfonini@gmail.com",
+			City:          "Marau",
+			Amount:        20.67,
+			Description:   "Invoice #4",
+			TransactionID: "99999",
+		}, "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau624305059999950300017BR.GOV.BCB.BRCODE01051.0.063041F3"},
 	}
 
 	for _, tt := range tests {

@@ -8,6 +8,7 @@
 // 		City: "Marau",
 // 		Amount: 20.67,
 // 		Description: "Invoice #4",
+// 		TransactionID: "***", // optional
 // 	}
 //
 // 	copyPaste, err := pix.Pix(options)
@@ -143,6 +144,10 @@ func buildDataMap(options Options) intMap {
 
 	// Transaction ID
 	data[62] = intMap{5: "***", 50: intMap{0: "BR.GOV.BCB.BRCODE", 1: "1.0.0"}}
+
+	if options.TransactionID != "" {
+		data[62].(intMap)[5] = options.TransactionID
+	}
 
 	return data
 }
