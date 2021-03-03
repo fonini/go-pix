@@ -1,13 +1,14 @@
-# go-pix #
+# go-pix
 
 [![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/github.com/fonini/go-pix/pix)
 [![Test Status](https://github.com/fonini/go-pix/workflows/tests/badge.svg)](https://github.com/fonini/go-pix/actions?query=workflow%3Atests)
 [![codecov](https://codecov.io/gh/fonini/go-pix/branch/main/graph/badge.svg?token=9RNR32U66L&force=true)](https://codecov.io/gh/fonini/go-pix)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-pix?force=true)](https://goreportcard.com/report/github.com/fonini/go-pix)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 go-pix is a Go library for generating [Pix](https://www.bcb.gov.br/estabilidadefinanceira/pix) transactions using Copy and Paste or QR codes.
 
-## About Pix ##
+## About Pix
 
 ![Generated QR code](pix.png?raw=true)
 
@@ -22,7 +23,7 @@ The address key is a way to identify the user’s account. There are four types 
 
 This key binds the basic information to the user’s complete account information, allowing users to send and receive money using only an address key.
 
-## Usage ##
+## Usage
 
 ```go
 import "github.com/fonini/go-pix/pix"
@@ -67,8 +68,12 @@ The ```qrCode``` is a byte array, containing a graphical representation of the C
 
 ![Generated QR code](qr.png?raw=true)
 
-## Tests ##
+## Tests
 
-```
+```sh
 go test ./pix
 ```
+
+## License
+
+This open-sourced software is licensed under the [MIT license](https://opensource.org/licenses/MIT).
