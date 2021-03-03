@@ -202,7 +202,7 @@ func calculateCRC16(str string) (string, error) {
 		return "", err
 	}
 
-	return strings.ToUpper(fmt.Sprintf("%x", h.Sum16())), nil
+	return fmt.Sprintf("%04X", h.Sum16()), nil
 }
 
 func leadingZeroIfLenSmallerThan10(str string) string {
