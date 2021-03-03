@@ -27,7 +27,6 @@ import (
 	"reflect"
 	"sort"
 	"strconv"
-	"strings"
 	"unicode/utf8"
 
 	"github.com/r10r/crc16"
@@ -162,16 +161,17 @@ func parseData(data intMap) string {
 
 		switch v.Kind() {
 		case reflect.String:
-			str += leadingZeroIfLenSmallerThan10(strconv.Itoa(k)) + charCount(data[k].(string)) + data[k].(string)
+			value := data[k].(string)
+			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
 		case reflect.Float64:
 			value := strconv.FormatFloat(v.Float(), 'f', 2, 64)
 
-			str += leadingZeroIfLenSmallerThan10(strconv.Itoa(k)) + charCount(value) + value
+			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
 		case reflect.Map:
 			// If the element is another map, do a recursive call
 			content := parseData(data[k].(intMap))
 
-			str += leadingZeroIfLenSmallerThan10(strconv.Itoa(k)) + charCount(content) + content
+			str += fmt.Sprintf("%02d%02d%s", k, len(content), content)
 		}
 	}
 
@@ -203,25 +203,4 @@ func calculateCRC16(str string) (string, error) {
 	}
 
 	return fmt.Sprintf("%04X", h.Sum16()), nil
-}
-
-func leadingZeroIfLenSmallerThan10(str string) string {
-	return left(str, 2, "0")
-}
-
-func charCount(str string) string {
-	str = strconv.Itoa(len(str))
-
-	return leadingZeroIfLenSmallerThan10(str)
-}
-
-func left(str string, length int, pad string) string {
-	return times(pad, length-len(str)) + str
-}
-
-func times(str string, n int) string {
-	if n <= 0 {
-		return ""
-	}
-	return strings.Repeat(str, n)
 }
