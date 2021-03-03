@@ -70,7 +70,7 @@ func TestValues_TransactionID(t *testing.T) {
 			Amount:        20.67,
 			Description:   "Invoice #4",
 			TransactionID: "99999",
-		}, "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau624305059999950300017BR.GOV.BCB.BRCODE01051.0.063041F3"},
+		}, "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau624305059999950300017BR.GOV.BCB.BRCODE01051.0.0630401F3"},
 	}
 
 	for _, tt := range tests {
