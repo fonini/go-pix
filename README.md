@@ -68,6 +68,14 @@ The ```qrCode``` is a byte array, containing a graphical representation of the C
 
 ![Generated QR code](qr.png?raw=true)
 
+## Banks tested
+* Caixa Econômica Federal
+* Nubank
+* PicPay
+* PagSeguro
+* Itaú
+* Mercado Pago
+
 ## Tests
 
 ```sh
