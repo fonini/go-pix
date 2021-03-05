@@ -1,10 +1,14 @@
 package pix
 
 import (
+	"bytes"
 	"errors"
+	"image"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/qrcode"
 )
 
 // test that input matches the value we want. If not, report an error on t.
@@ -12,7 +16,7 @@ func testValue(t *testing.T, input Options, want string) {
 	v, err := Pix(input)
 
 	if err != nil {
-		t.Errorf("Pix(%v) returned error: %v", input, err)
+		t.Errorf("Pix(%v) returned an error: %v", input, err)
 	}
 
 	if diff := cmp.Diff(want, v); diff != "" {
@@ -178,5 +182,41 @@ func TestValues_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		testError(t, tt.input, tt.want)
+	}
+}
+
+// Generate a QR Code from a Pix Copy and Paste string and decode the result
+func TestQrCodeContent(t *testing.T) {
+	str := "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
+
+	options := QRCodeOptions{Content: str}
+
+	qr, err := QRCode(options)
+
+	if err != nil {
+		t.Errorf("QRCode(%v) returned an error: %v", options, err)
+	}
+
+	img, _, err := image.Decode(bytes.NewReader(qr))
+
+	if err != nil {
+		t.Errorf("image.Decode returned an error: %v", err)
+	}
+
+	bmp, err := gozxing.NewBinaryBitmapFromImage(img)
+
+	if err != nil {
+		t.Errorf("gozxing.NewBinaryBitmapFromImage returned an error: %v", err)
+	}
+
+	qrReader := qrcode.NewQRCodeReader()
+	result, err := qrReader.Decode(bmp, nil)
+
+	if err != nil {
+		t.Errorf("qrReader.Decode returned an error: %v", err)
+	}
+
+	if diff := cmp.Diff(result.String(), str); diff != "" {
+		t.Errorf("QR Code content is unexpected:\n%s", diff)
 	}
 }

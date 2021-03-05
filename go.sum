@@ -1,8 +1,13 @@
 github.com/google/go-cmp v0.5.4 h1:L8R9j+yAqZuZjsqh/z+F1NCffTKKLShY6zXTItVIZ8M=
 github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/makiuchi-d/gozxing v0.0.0-20210302045325-d599004e2b52 h1:zxi8Kcd9QpfAQY89XaU4kytkygxX+UHxsa0xHzGpgsk=
+github.com/makiuchi-d/gozxing v0.0.0-20210302045325-d599004e2b52/go.mod h1:WoI7z45M7ZNA5BJxiJHaB+x7+k8S/3phW5Y13IR4yWY=
 github.com/r10r/crc16 v0.1.1 h1:BsuCL6d+j0hBCQ/nNnwHmlTF0shVES2IagUgh1MS6yU=
 github.com/r10r/crc16 v0.1.1/go.mod h1:I17p13f8bQGzqw5+futttVdERhbvzpgjlPZdwIJ0ka8=
 github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e h1:MRM5ITcdelLK2j1vwZ3Je0FKVCfqOLp5zO6trqMLYs0=
 github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e/go.mod h1:XV66xRDqSt+GTGFMVlhk3ULuV0y9ZmzeVGR4mloJI3M=
+golang.org/x/text v0.3.5 h1:i6eZZ+zk0SOf0xgBpEpPD18qWcJda6q1sxt3S0kzyUQ=
+golang.org/x/text v0.3.5/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
+golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
