@@ -6,8 +6,8 @@
 // 		Name: "Jonnas Fonini",
 // 		Key: "jonnasfonini@gmail.com",
 // 		City: "Marau",
-// 		Amount: 20.67,
-// 		Description: "Invoice #4",
+// 		Amount: 20.67, // optional
+// 		Description: "Invoice #4", // optional
 // 		TransactionID: "***", // optional
 // 	}
 //
@@ -99,6 +99,14 @@ func validateData(options Options) error {
 		return errors.New("key must not be empty")
 	}
 
+	if options.Name == "" {
+		return errors.New("name must not be empty")
+	}
+
+	if options.City == "" {
+		return errors.New("city must not be empty")
+	}
+
 	if utf8.RuneCountInString(options.Name) > 25 {
 		return errors.New("name must be at least 25 characters long")
 	}
@@ -132,14 +140,10 @@ func buildDataMap(options Options) intMap {
 	data[58] = "BR"
 
 	// Merchant Name. 25 characters maximum
-	if options.Name != "" {
-		data[59] = options.Name
-	}
+	data[59] = options.Name
 
 	// Merchant City. 15 characters maximum
-	if options.City != "" {
-		data[60] = options.City
-	}
+	data[60] = options.City
 
 	// Transaction ID
 	data[62] = intMap{5: "***", 50: intMap{0: "BR.GOV.BCB.BRCODE", 1: "1.0.0"}}

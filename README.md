@@ -36,15 +36,15 @@ options := pix.Options{
     Name: "Jonnas Fonini",
     Key: "jonnasfonini@gmail.com",
     City: "Marau",
-    Amount: 20.67,
-    Description: "Invoice #4",
+    Amount: 20.67, // optional
+    Description: "Invoice #4", // optional
     TransactionID: "***", // optional
 }
 
 copyPaste, err := pix.Pix(options)
 
 if err != nil {
-	panic(err)
+    panic(err)
 }
 
 fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
@@ -60,7 +60,7 @@ options := QRCodeOptions{Size: 256, Content: copyPaste}
 qrCode, err := pix.QRCode(options)
 
 if err != nil {
-	panic(err)
+    panic(err)
 }
 ```
 

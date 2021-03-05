@@ -82,40 +82,6 @@ func TestValues_TransactionID(t *testing.T) {
 	}
 }
 
-func TestValues_WithoutName(t *testing.T) {
-	tests := []struct {
-		input Options
-		want  string
-	}{
-		{Options{
-			Key:    "jonnasfonini@gmail.com",
-			City:   "Marau",
-			Amount: 20.67,
-		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0200520400005303986540520.675802BR6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304948B"},
-	}
-
-	for _, tt := range tests {
-		testValue(t, tt.input, tt.want)
-	}
-}
-
-func TestValues_WithoutCity(t *testing.T) {
-	tests := []struct {
-		input Options
-		want  string
-	}{
-		{Options{
-			Name:   "Jonnas Fonini",
-			Key:    "jonnasfonini@gmail.com",
-			Amount: 20.67,
-		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0200520400005303986540520.675802BR5913Jonnas Fonini62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304BF73"},
-	}
-
-	for _, tt := range tests {
-		testValue(t, tt.input, tt.want)
-	}
-}
-
 func TestValues_WithoutAmount(t *testing.T) {
 	tests := []struct {
 		input Options
@@ -133,37 +99,6 @@ func TestValues_WithoutAmount(t *testing.T) {
 	}
 }
 
-func TestValues_OnlyAmountAndAccount(t *testing.T) {
-	tests := []struct {
-		input Options
-		want  string
-	}{
-		{Options{
-			Key:    "jonnasfonini@gmail.com",
-			Amount: 5.50,
-		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com020052040000530398654045.505802BR62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304E0EE"},
-	}
-
-	for _, tt := range tests {
-		testValue(t, tt.input, tt.want)
-	}
-}
-
-func TestValues_OnlyAccount(t *testing.T) {
-	tests := []struct {
-		input Options
-		want  string
-	}{
-		{Options{
-			Key: "jonnasfonini@gmail.com",
-		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com020052040000530398654040.005802BR62410503***50300017BR.GOV.BCB.BRCODE01051.0.0630430B9"},
-	}
-
-	for _, tt := range tests {
-		testValue(t, tt.input, tt.want)
-	}
-}
-
 func TestValues_Errors(t *testing.T) {
 	tests := []struct {
 		input Options
@@ -173,11 +108,21 @@ func TestValues_Errors(t *testing.T) {
 		{Options{
 			Key:  "jonnasfonini@gmail.com",
 			Name: "Receiver long name to cause error",
+			City: "Marau",
 		}, errors.New("name must be at least 25 characters long")},
 		{Options{
 			Key:  "jonnasfonini@gmail.com",
+			Name: "Jonnas",
 			City: "Receiver city long name",
 		}, errors.New("city must be at least 15 characters long")},
+		{Options{
+			Name: "Jonnas",
+			Key:  "jonnasfonini@gmail.com",
+		}, errors.New("city must not be empty")},
+		{Options{
+			City: "Marau",
+			Key:  "jonnasfonini@gmail.com",
+		}, errors.New("name must not be empty")},
 	}
 
 	for _, tt := range tests {
