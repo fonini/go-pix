@@ -1,6 +1,6 @@
 # go-pix
 
-[![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/github.com/fonini/go-pix/pix)
+[![GoDoc](https://pkg.go.dev/badge/github.com/fonini/go-pix)](https://pkg.go.dev/github.com/fonini/go-pix/pix)
 [![Test Status](https://github.com/fonini/go-pix/workflows/tests/badge.svg)](https://github.com/fonini/go-pix/actions?query=workflow%3Atests)
 [![codecov](https://codecov.io/gh/fonini/go-pix/branch/main/graph/badge.svg?token=9RNR32U66L&force=true)](https://codecov.io/gh/fonini/go-pix)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fonini/go-pix?force=true)](https://goreportcard.com/report/github.com/fonini/go-pix)
