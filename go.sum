@@ -1,5 +1,5 @@
-github.com/google/go-cmp v0.5.5 h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=
-github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/google/go-cmp v0.5.6 h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=
+github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/makiuchi-d/gozxing v0.0.0-20210302045325-d599004e2b52 h1:zxi8Kcd9QpfAQY89XaU4kytkygxX+UHxsa0xHzGpgsk=
 github.com/makiuchi-d/gozxing v0.0.0-20210302045325-d599004e2b52/go.mod h1:WoI7z45M7ZNA5BJxiJHaB+x7+k8S/3phW5Y13IR4yWY=
 github.com/r10r/crc16 v0.1.1 h1:BsuCL6d+j0hBCQ/nNnwHmlTF0shVES2IagUgh1MS6yU=
