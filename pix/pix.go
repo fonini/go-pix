@@ -180,20 +180,24 @@ func parseData(data intMap) string {
 	return str
 }
 
-func ReadPix(copyPaste string) Options {
+// ReadPix generates a Options struct using a copyPaste PIX code
+func ReadPix(copyPaste string) (Options, error) {
 	data := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
-	options := readDataMap(data)
-	return options
+	options, err := readDataMap(data)
+	return options, err
 }
 
-func readDataMap(data intMap) Options {
-	keyMap := data[26].(intMap)
+func readDataMap(data intMap) (op Options, err error) {
+	keyMap, ok := data[26].(intMap)
+	if !ok {
+		return op, fmt.Errorf("data[26] is not (intMap)")
+	}
 	txMap := data[62].(intMap)
 	if txMap[5].(string) == "***" {
 		txMap[5] = ""
 	}
 
-	return Options{
+	op = Options{
 		Key:           keyMap[1].(string),
 		Description:   keyMap[2].(string),
 		Amount:        data[54].(float64),
@@ -201,6 +205,8 @@ func readDataMap(data intMap) Options {
 		City:          data[60].(string),
 		TransactionID: txMap[5].(string),
 	}
+
+	return op, err
 }
 
 func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
