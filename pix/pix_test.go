@@ -25,10 +25,10 @@ func testValue(t *testing.T, input Options, want string) {
 }
 
 func testRead(t *testing.T, want Options, input string) {
-	v := ReadPIX(input)
+	v := ReadPix(input)
 
 	if diff := cmp.Diff(want, v); diff != "" {
-		t.Errorf("ReadPIX(\"%s\") mismatch:\n%s", input, diff)
+		t.Errorf("ReadPix(\"%s\") mismatch:\n%s", input, diff)
 	}
 }
 

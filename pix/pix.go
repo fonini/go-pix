@@ -180,7 +180,7 @@ func parseData(data intMap) string {
 	return str
 }
 
-func ReadPIX(copyPaste string) Options {
+func ReadPix(copyPaste string) Options {
 	data := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
 	options := readDataMap(data)
 	return options
