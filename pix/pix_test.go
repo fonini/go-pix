@@ -24,6 +24,14 @@ func testValue(t *testing.T, input Options, want string) {
 	}
 }
 
+func testRead(t *testing.T, want Options, input string) {
+	v := ReadPIX(input)
+
+	if diff := cmp.Diff(want, v); diff != "" {
+		t.Errorf("ReadPIX(\"%s\") mismatch:\n%s", input, diff)
+	}
+}
+
 func testError(t *testing.T, input Options, want error) {
 	v, err := Pix(input)
 
@@ -59,6 +67,7 @@ func TestValues_FullOptions(t *testing.T) {
 
 	for _, tt := range tests {
 		testValue(t, tt.input, tt.want)
+		testRead(t, tt.input, tt.want)
 	}
 }
 
