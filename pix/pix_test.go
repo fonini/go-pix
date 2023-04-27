@@ -2,6 +2,7 @@ package pix
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"image"
 	"testing"
@@ -12,15 +13,25 @@ import (
 )
 
 // test that input matches the value we want. If not, report an error on t.
-func testValue(t *testing.T, input Options, want string) {
-	v, err := Pix(input)
+func testValue(t *testing.T, options Options, copyPaste string) {
+	v, err := Pix(options)
 
 	if err != nil {
-		t.Errorf("Pix(%v) returned an error: %v", input, err)
+		t.Errorf("Pix(%v) returned an error: %v", options, err)
 	}
 
-	if diff := cmp.Diff(want, v); diff != "" {
-		t.Errorf("Pix(%v) mismatch:\n%s", input, diff)
+	if diff := cmp.Diff(copyPaste, v); diff != "" {
+		t.Errorf("Pix(%v) mismatch:\n%s", options, diff)
+	}
+
+	vp, err := ReadPix(copyPaste)
+	if err != nil {
+		t.Errorf("ReadPix(%v) returned an error: %v", options, err)
+	}
+
+	if diff := cmp.Diff(options, vp); diff != "" {
+		opJSON, _ := json.Marshal(options)
+		t.Errorf("ReadPix('%s') mismatch:\n%s", opJSON, diff)
 	}
 }
 

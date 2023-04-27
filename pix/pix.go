@@ -2,23 +2,22 @@
 //
 // As a simple example:
 //
-// 	options := pix.Options{
-// 		Name: "Jonnas Fonini",
-// 		Key: "jonnasfonini@gmail.com",
-// 		City: "Marau",
-// 		Amount: 20.67, // optional
-// 		Description: "Invoice #4", // optional
-// 		TransactionID: "***", // optional
-// 	}
+//	options := pix.Options{
+//		Name: "Jonnas Fonini",
+//		Key: "jonnasfonini@gmail.com",
+//		City: "Marau",
+//		Amount: 20.67, // optional
+//		Description: "Invoice #4", // optional
+//		TransactionID: "***", // optional
+//	}
 //
-// 	copyPaste, err := pix.Pix(options)
+//	copyPaste, err := pix.Pix(options)
 //
-// 	if err != nil {
-// 		panic(err)
-// 	}
+//	if err != nil {
+//		panic(err)
+//	}
 //
-// 	fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
-//
+//	fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
 package pix
 
 import (
@@ -66,7 +65,6 @@ func Pix(options Options) (string, error) {
 	}
 
 	data := buildDataMap(options)
-
 	str := parseData(data)
 
 	// Add the CRC at the end
@@ -180,6 +178,64 @@ func parseData(data intMap) string {
 	}
 
 	return str
+}
+
+// ReadPix generates a Options struct using a copyPaste PIX code
+func ReadPix(copyPaste string) (Options, error) {
+	data := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
+	options, err := readDataMap(data)
+	return options, err
+}
+
+func readDataMap(data intMap) (op Options, err error) {
+	keyMap, ok := data[26].(intMap)
+	if !ok {
+		return op, fmt.Errorf("data[26] is not (intMap)")
+	}
+	txMap := data[62].(intMap)
+	if txMap[5].(string) == "***" {
+		txMap[5] = ""
+	}
+
+	op = Options{
+		Key:           keyMap[1].(string),
+		Description:   keyMap[2].(string),
+		Amount:        data[54].(float64),
+		Name:          data[59].(string),
+		City:          data[60].(string),
+		TransactionID: txMap[5].(string),
+	}
+
+	return op, err
+}
+
+func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
+	data := make(intMap)
+
+	k := 0
+	for k < len(copyPaste) {
+		index, _ := strconv.Atoi(copyPaste[k : k+2])
+		k += 2
+
+		lenght, _ := strconv.Atoi(copyPaste[k : k+2])
+		k += 2
+
+		value := copyPaste[k : k+lenght]
+		k += lenght
+
+		v := reflect.ValueOf(guide[index])
+		switch v.Kind() {
+		case reflect.Map:
+			m := guide[index].(intMap)
+			data[index] = buildUsingGuideMap(value, m)
+		case reflect.String:
+			data[index] = value
+		case reflect.Float64:
+			data[index], _ = strconv.ParseFloat(value, 64)
+		}
+	}
+
+	return data
 }
 
 func sortKeys(data intMap) []int {

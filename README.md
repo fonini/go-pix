@@ -48,6 +48,13 @@ if err != nil {
 }
 
 fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
+
+optionsFromCode, err := pix.ReadPix(copyPaste)
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(optionsFromCode)
 ```
 
 ### Generating a QR code from a Copy and Paste code
