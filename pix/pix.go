@@ -113,6 +113,20 @@ func validateData(options Options) error {
 		return errors.New("city must be at least 15 characters long")
 	}
 
+	// Validate Transaction ID when provided
+	if options.TransactionID != "" {
+		// Max length 25 characters
+		if utf8.RuneCountInString(options.TransactionID) > 25 {
+			return errors.New("transaction id must be at most 25 characters long")
+		}
+		// Only alphanumeric characters
+		for _, r := range options.TransactionID {
+			if !(r >= '0' && r <= '9' || r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z') {
+				return errors.New("transaction id must be alphanumeric (letters and numbers only)")
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -180,7 +194,7 @@ func parseData(data intMap) string {
 	return str
 }
 
-// ReadPix generates a Options struct using a copyPaste PIX code
+// ReadPix generates an Options struct using a copyPaste PIX code
 func ReadPix(copyPaste string) (Options, error) {
 	data := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
 	options, err := readDataMap(data)
@@ -217,11 +231,11 @@ func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
 		index, _ := strconv.Atoi(copyPaste[k : k+2])
 		k += 2
 
-		lenght, _ := strconv.Atoi(copyPaste[k : k+2])
+		length, _ := strconv.Atoi(copyPaste[k : k+2])
 		k += 2
 
-		value := copyPaste[k : k+lenght]
-		k += lenght
+		value := copyPaste[k : k+length]
+		k += length
 
 		v := reflect.ValueOf(guide[index])
 		switch v.Kind() {

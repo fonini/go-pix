@@ -134,10 +134,38 @@ func TestValues_Errors(t *testing.T) {
 			City: "Marau",
 			Key:  "jonnasfonini@gmail.com",
 		}, errors.New("name must not be empty")},
+		// Transaction ID invalid: too long (>25)
+		{Options{
+			Name:          "Jonnas",
+			Key:           "jonnasfonini@gmail.com",
+			City:          "Marau",
+			TransactionID: "aaaaaaaaaaaaaaaaaaaaaaaaaa", // 26 a's
+		}, errors.New("transaction id must be at most 25 characters long")},
+		// Transaction ID invalid: non-alphanumeric character '-'
+		{Options{
+			Name:          "Jonnas",
+			Key:           "jonnasfonini@gmail.com",
+			City:          "Marau",
+			TransactionID: "abc-def",
+		}, errors.New("transaction id must be alphanumeric (letters and numbers only)")},
 	}
 
 	for _, tt := range tests {
 		testError(t, tt.input, tt.want)
+	}
+}
+
+func TestTransactionID_Valid25Alnum(t *testing.T) {
+	// Exactly 25 alphanumeric characters
+	validTxID := "ABCDEFGHIJKLMNOPQRSTUVWXY"
+	options := Options{
+		Name:          "Jonnas Fonini",
+		Key:           "jonnasfonini@gmail.com",
+		City:          "Marau",
+		TransactionID: validTxID,
+	}
+	if _, err := Pix(options); err != nil {
+		t.Errorf("Pix returned unexpected error for valid TransactionID: %v", err)
 	}
 }
 
