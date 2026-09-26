@@ -102,7 +102,7 @@ func TestValues_WithoutAmount(t *testing.T) {
 			Name: "Jonnas Fonini",
 			Key:  "jonnasfonini@gmail.com",
 			City: "Marau",
-		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com020052040000530398654040.005802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CC71"},
+		}, "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com02005204000053039865802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.063047418"},
 	}
 
 	for _, tt := range tests {

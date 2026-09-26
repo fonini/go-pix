@@ -180,6 +180,9 @@ func parseData(data intMap) string {
 			value := data[k].(string)
 			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
 		case reflect.Float64:
+			if v.Float() == 0 {
+				continue
+			}
 			value := strconv.FormatFloat(v.Float(), 'f', 2, 64)
 
 			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
@@ -211,10 +214,12 @@ func readDataMap(data intMap) (op Options, err error) {
 		txMap[5] = ""
 	}
 
+	amount, _ := data[54].(float64)
+
 	op = Options{
 		Key:           keyMap[1].(string),
 		Description:   keyMap[2].(string),
-		Amount:        data[54].(float64),
+		Amount:        amount,
 		Name:          data[59].(string),
 		City:          data[60].(string),
 		TransactionID: txMap[5].(string),
