@@ -145,8 +145,10 @@ func buildDataMap(options Options) intMap {
 	// Transaction Currency - Brazilian Real - ISO4217
 	data[53] = "986"
 
-	// Transaction Amount
-	data[54] = options.Amount
+	// Transaction Amount. Omit it when no amount is defined, so the payer can enter it.
+	if options.Amount != 0 {
+		data[54] = options.Amount
+	}
 
 	// Country Code - ISO3166-1 alpha 2
 	data[58] = "BR"
@@ -180,9 +182,6 @@ func parseData(data intMap) string {
 			value := data[k].(string)
 			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
 		case reflect.Float64:
-			if v.Float() == 0 {
-				continue
-			}
 			value := strconv.FormatFloat(v.Float(), 'f', 2, 64)
 
 			str += fmt.Sprintf("%02d%02d%s", k, len(value), value)
@@ -241,6 +240,11 @@ func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
 
 		value := copyPaste[k : k+length]
 		k += length
+
+		if index == 54 {
+			data[index], _ = strconv.ParseFloat(value, 64)
+			continue
+		}
 
 		v := reflect.ValueOf(guide[index])
 		switch v.Kind() {

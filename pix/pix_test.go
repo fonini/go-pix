@@ -110,6 +110,18 @@ func TestValues_WithoutAmount(t *testing.T) {
 	}
 }
 
+func TestValues_ZeroAmount(t *testing.T) {
+	options := Options{
+		Name:   "Jonnas Fonini",
+		Key:    "jonnasfonini@gmail.com",
+		City:   "Marau",
+		Amount: 0,
+	}
+	want := "00020126480014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com02005204000053039865802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.063047418"
+
+	testValue(t, options, want)
+}
+
 func TestValues_Errors(t *testing.T) {
 	tests := []struct {
 		input Options
