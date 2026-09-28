@@ -14,7 +14,8 @@
 //	copyPaste, err := pix.Pix(options)
 //
 //	if err != nil {
-//		panic(err)
+//		fmt.Println("could not generate Pix:", err)
+//		return
 //	}
 //
 //	fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
@@ -106,11 +107,11 @@ func validateData(options Options) error {
 	}
 
 	if utf8.RuneCountInString(options.Name) > 25 {
-		return errors.New("name must be at least 25 characters long")
+		return errors.New("name must be at most 25 characters long")
 	}
 
 	if utf8.RuneCountInString(options.City) > 15 {
-		return errors.New("city must be at least 15 characters long")
+		return errors.New("city must be at most 15 characters long")
 	}
 
 	// Validate Transaction ID when provided
@@ -198,45 +199,84 @@ func parseData(data intMap) string {
 
 // ReadPix generates an Options struct using a copyPaste PIX code
 func ReadPix(copyPaste string) (Options, error) {
-	data := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
-	options, err := readDataMap(data)
-	return options, err
+	data, err := buildUsingGuideMap(copyPaste, buildDataMap(Options{}))
+	if err != nil {
+		return Options{}, err
+	}
+
+	return readDataMap(data)
 }
 
 func readDataMap(data intMap) (op Options, err error) {
 	keyMap, ok := data[26].(intMap)
 	if !ok {
-		return op, fmt.Errorf("data[26] is not (intMap)")
+		return op, errors.New("invalid Pix code: missing merchant account information")
 	}
-	txMap := data[62].(intMap)
-	if txMap[5].(string) == "***" {
-		txMap[5] = ""
+	key, ok := keyMap[1].(string)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing Pix key")
+	}
+	description, ok := keyMap[2].(string)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing transaction description")
+	}
+	name, ok := data[59].(string)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing merchant name")
+	}
+	city, ok := data[60].(string)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing merchant city")
+	}
+	txMap, ok := data[62].(intMap)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing additional data")
+	}
+	transactionID, ok := txMap[5].(string)
+	if !ok {
+		return op, errors.New("invalid Pix code: missing transaction ID")
+	}
+	if transactionID == "***" {
+		transactionID = ""
 	}
 
 	amount, _ := data[54].(float64)
 
 	op = Options{
-		Key:           keyMap[1].(string),
-		Description:   keyMap[2].(string),
+		Key:           key,
+		Description:   description,
 		Amount:        amount,
-		Name:          data[59].(string),
-		City:          data[60].(string),
-		TransactionID: txMap[5].(string),
+		Name:          name,
+		City:          city,
+		TransactionID: transactionID,
 	}
 
 	return op, err
 }
 
-func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
+func buildUsingGuideMap(copyPaste string, guide intMap) (intMap, error) {
 	data := make(intMap)
 
 	k := 0
 	for k < len(copyPaste) {
-		index, _ := strconv.Atoi(copyPaste[k : k+2])
+		if len(copyPaste)-k < 4 {
+			return nil, errors.New("invalid Pix code: truncated TLV header")
+		}
+
+		index, err := strconv.Atoi(copyPaste[k : k+2])
+		if err != nil {
+			return nil, errors.New("invalid Pix code: invalid TLV tag")
+		}
 		k += 2
 
-		length, _ := strconv.Atoi(copyPaste[k : k+2])
+		length, err := strconv.Atoi(copyPaste[k : k+2])
+		if err != nil {
+			return nil, errors.New("invalid Pix code: invalid TLV length")
+		}
 		k += 2
+		if length > len(copyPaste)-k {
+			return nil, errors.New("invalid Pix code: truncated TLV value")
+		}
 
 		value := copyPaste[k : k+length]
 		k += length
@@ -250,7 +290,11 @@ func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
 		switch v.Kind() {
 		case reflect.Map:
 			m := guide[index].(intMap)
-			data[index] = buildUsingGuideMap(value, m)
+			decoded, err := buildUsingGuideMap(value, m)
+			if err != nil {
+				return nil, err
+			}
+			data[index] = decoded
 		case reflect.String:
 			data[index] = value
 		case reflect.Float64:
@@ -258,7 +302,7 @@ func buildUsingGuideMap(copyPaste string, guide intMap) intMap {
 		}
 	}
 
-	return data
+	return data, nil
 }
 
 func sortKeys(data intMap) []int {
