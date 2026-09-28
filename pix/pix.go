@@ -122,7 +122,9 @@ func validateData(options Options) error {
 		}
 		// Only alphanumeric characters
 		for _, r := range options.TransactionID {
-			if !(r >= '0' && r <= '9' || r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z') {
+			if (r < '0' || r > '9') &&
+				(r < 'a' || r > 'z') &&
+				(r < 'A' || r > 'Z') {
 				return errors.New("transaction id must be alphanumeric (letters and numbers only)")
 			}
 		}
