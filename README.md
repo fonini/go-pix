@@ -44,14 +44,16 @@ options := pix.Options{
 copyPaste, err := pix.Pix(options)
 
 if err != nil {
-    panic(err)
+    fmt.Println("could not generate Pix:", err)
+    return
 }
 
 fmt.Println(copyPaste) // will output: "00020126580014BR.GOV.BCB.PIX0122jonnasfonini@gmail.com0210Invoice #4520400005303986540520.675802BR5913Jonnas Fonini6005Marau62410503***50300017BR.GOV.BCB.BRCODE01051.0.06304CF13"
 
 optionsFromCode, err := pix.ReadPix(copyPaste)
 if err != nil {
-    panic(err)
+    fmt.Println("could not read Pix:", err)
+    return
 }
 
 fmt.Println(optionsFromCode)
@@ -62,12 +64,13 @@ fmt.Println(optionsFromCode)
 You can use the Copy and Paste code generated above to generate a QR code
 
 ```go
-options := QRCodeOptions{Size: 256, Content: copyPaste}
+options := pix.QRCodeOptions{Size: 256, Content: copyPaste}
 
 qrCode, err := pix.QRCode(options)
 
 if err != nil {
-    panic(err)
+    fmt.Println("could not generate QR code:", err)
+    return
 }
 ```
 
@@ -86,7 +89,7 @@ The ```qrCode``` is a byte array, containing a graphical representation of the C
 ## Tests
 
 ```sh
-go test ./pix
+go test ./...
 ```
 
 ## License

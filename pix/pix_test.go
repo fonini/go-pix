@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"image"
+	"math/rand"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -14,6 +15,8 @@ import (
 
 // test that input matches the value we want. If not, report an error on t.
 func testValue(t *testing.T, options Options, copyPaste string) {
+	t.Helper()
+
 	v, err := Pix(options)
 
 	if err != nil {
@@ -36,6 +39,8 @@ func testValue(t *testing.T, options Options, copyPaste string) {
 }
 
 func testError(t *testing.T, input Options, want error) {
+	t.Helper()
+
 	v, err := Pix(input)
 
 	if err == nil {
@@ -132,12 +137,12 @@ func TestValues_Errors(t *testing.T) {
 			Key:  "jonnasfonini@gmail.com",
 			Name: "Receiver long name to cause error",
 			City: "Marau",
-		}, errors.New("name must be at least 25 characters long")},
+		}, errors.New("name must be at most 25 characters long")},
 		{Options{
 			Key:  "jonnasfonini@gmail.com",
 			Name: "Jonnas",
 			City: "Receiver city long name",
-		}, errors.New("city must be at least 15 characters long")},
+		}, errors.New("city must be at most 15 characters long")},
 		{Options{
 			Name: "Jonnas",
 			Key:  "jonnasfonini@gmail.com",
@@ -164,6 +169,45 @@ func TestValues_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		testError(t, tt.input, tt.want)
+	}
+}
+
+func TestReadPixRejectsMalformedInput(t *testing.T) {
+	tests := []string{
+		"00",
+		"0002",
+		"00aa",
+		"0002012658",
+		"000201",
+	}
+
+	for _, input := range tests {
+		t.Run(input, func(t *testing.T) {
+			if _, err := ReadPix(input); err == nil {
+				t.Fatalf("ReadPix(%q) returned no error", input)
+			}
+		})
+	}
+}
+
+func TestReadPixMalformedInputDoesNotPanic(t *testing.T) {
+	random := rand.New(rand.NewSource(0))
+
+	for i := 0; i < 1000; i++ {
+		input := make([]byte, random.Intn(65))
+		if _, err := random.Read(input); err != nil {
+			t.Fatal(err)
+		}
+
+		func() {
+			defer func() {
+				if recovered := recover(); recovered != nil {
+					t.Fatalf("ReadPix panicked for malformed input %q: %v", input, recovered)
+				}
+			}()
+
+			_, _ = ReadPix(string(input))
+		}()
 	}
 }
 
