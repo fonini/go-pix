@@ -260,3 +260,34 @@ func TestQrCodeContent(t *testing.T) {
 		t.Errorf("QR Code content is unexpected:\n%s", diff)
 	}
 }
+
+func TestNegativeAmountRejected(t *testing.T) {
+	_, err := Pix(Options{Key: "a@b.com", Name: "Alice", City: "Marau", Amount: -1})
+	if err == nil {
+		t.Fatal("expected error for negative amount")
+	}
+}
+
+func TestQRCodeNegativeSizeRejected(t *testing.T) {
+	_, err := QRCode(QRCodeOptions{Content: "x", Size: -1})
+	if err == nil {
+		t.Fatal("expected error for negative QR size")
+	}
+}
+
+func TestReadPixWithoutDescription(t *testing.T) {
+	code, err := Pix(Options{Key: "a@b.com", Name: "Alice", City: "Marau"})
+	if err != nil {
+		t.Fatalf("Pix: %v", err)
+	}
+	got, err := ReadPix(code)
+	if err != nil {
+		t.Fatalf("ReadPix: %v", err)
+	}
+	if got.Description != "" {
+		t.Fatalf("expected empty description, got %q", got.Description)
+	}
+	if got.Key != "a@b.com" || got.Name != "Alice" || got.City != "Marau" {
+		t.Fatalf("unexpected options: %+v", got)
+	}
+}

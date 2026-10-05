@@ -84,6 +84,9 @@ func Pix(options Options) (string, error) {
 
 // QRCode returns a graphical representation of the Copy and Paste code in a QR Code form.
 func QRCode(options QRCodeOptions) ([]byte, error) {
+	if options.Size < 0 {
+		return nil, errors.New("size must not be negative")
+	}
 	if options.Size == 0 {
 		options.Size = 256
 	}
@@ -104,6 +107,10 @@ func validateData(options Options) error {
 
 	if options.City == "" {
 		return errors.New("city must not be empty")
+	}
+
+	if options.Amount < 0 {
+		return errors.New("amount must not be negative")
 	}
 
 	if utf8.RuneCountInString(options.Name) > 25 {
@@ -218,10 +225,8 @@ func readDataMap(data intMap) (op Options, err error) {
 	if !ok {
 		return op, errors.New("invalid Pix code: missing Pix key")
 	}
-	description, ok := keyMap[2].(string)
-	if !ok {
-		return op, errors.New("invalid Pix code: missing transaction description")
-	}
+	// Description (ID 02) is optional in Pix payloads.
+	description, _ := keyMap[2].(string)
 	name, ok := data[59].(string)
 	if !ok {
 		return op, errors.New("invalid Pix code: missing merchant name")
